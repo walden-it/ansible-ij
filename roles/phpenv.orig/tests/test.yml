@@ -1,6 +1,0 @@
----
-- hosts: all
-  remote_user: vagrant
-  sudo: yes
-  roles:
-    - ansible-role-phpenv

@@ -1,6 +1,0 @@
----
-- include: "system/install_versions.yml"
-  when: "phpenv_env == 'system'"
-
-- include: "user/install_versions.yml"
-  when: "phpenv_env == 'user'"

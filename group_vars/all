@@ -1,0 +1,19 @@
+---
+phpenv_global: 5.6.29
+phpenv_env: system
+phpenv_versions:
+  - 5.6.29
+  - 7.1.2 
+
+phpenv_path: /usr/local/phpenv/versions
+
+phpfpm_user: www-data
+phpfpm_group: www-data
+
+apache_port: 8080
+mysql_root_password: 123456
+
+firewall_allowed_tcp_ports:
+  - 80
+  - 22
+  - 443

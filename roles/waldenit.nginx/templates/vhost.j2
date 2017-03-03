@@ -1,0 +1,59 @@
+server {
+    listen       {{item.value.port}} {%if item.value.default == true %} default_server {%endif%};
+    server_name  {{item.key}} {{item.value.server_name_additional}};
+
+    {%if item.value.ssl is defined and item.value.ssl == true %}
+
+    listen              443 ssl;
+    server_name         {{item.key}};
+    ssl_certificate     {{item.value.ssl_cert}};
+    ssl_certificate_key {{item.value.ssl_key}};
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    
+   {%if item.value.ssl_redirect is defined and item.value.ssl_redirect == true %}
+    if ($scheme = http) {
+        return 301 https://$server_name$request_uri;
+    }
+   {%endif%}
+
+   {%endif%}
+
+    #charset koi8-r;
+    access_log  /var/www/{{item.key}}/logs/access.log  main;
+
+    location / {
+        root   /var/www/{{item.key}}/htdocs;
+        index  index.php index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+     location ~ \.php$ {
+        proxy_set_header X-Real-IP  $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Host $host;
+        proxy_pass http://127.0.0.1:{{apache_port}};
+
+         }
+
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+{% if item.value.additional is defined %}
+   {{item.value.additional}}
+{%endif%}
+}
+
+

@@ -1,0 +1,20 @@
+---
+- include_vars: "group_vars/vhosts.yml"
+
+- template: 
+    src: vhost.j2
+    dest: "/etc/nginx/conf.d/{{item.key}}.conf"
+  with_dict: vhosts
+
+- name: create htdocs
+  file: dest=/var/www/{{item.key}}/htdocs recurse=true state=directory
+  with_dict: vhosts
+
+- name: create logs
+  file: dest=/var/www/{{item.key}}/logs recurse=true state=directory
+  with_dict: vhosts
+
+- name: restart  nginx
+  service:
+    name: nginx
+    state: restarted

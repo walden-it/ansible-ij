@@ -1,0 +1,42 @@
+- include_vars: 'group_vars/vhosts.yml'
+
+- debug: msg="{{vhosts}}"
+- template: 
+    src: vhosts.conf.j2
+    dest: "/etc/apache2/sites-available/{{item.key}}.conf"
+  with_dict: vhosts
+
+- file:
+    src: "/etc/apache2/sites-available/{{item.key}}.conf"
+    dest: "/etc/apache2/sites-enabled/{{item.key}}.conf"
+    state: link
+  with_dict: vhosts
+  when:  item.value.enabled == True
+
+- name: create htdocs
+  file: dest=/var/www/{{item.key}}/htdocs recurse=true state=directory
+  with_dict: vhosts
+
+- name: upload index.php
+  copy: 
+    dest: /var/www/{{item.key}}/htdocs/index.php
+    src: "{{item.value.index_file}}"
+  with_dict: vhosts
+
+- name: create logs
+  file: dest=/var/www/{{item.key}}/logs_apache2 recurse=true state=directory
+  with_dict: vhosts
+
+- name: reconfigure apache port
+  lineinfile:
+    dest: /etc/apache2/ports.conf
+    state: present
+    regexp: '^Listen '
+    line: 'Listen {{apache_port}}'
+
+- name: enable modules
+  command: a2enmod proxy_fcgi
+
+- service:
+    name: apache2
+    state: restarted

@@ -1,0 +1,3 @@
+---
+# tasks file for waldenit.nginx
+- include: "tasks/install_{{ansible_os_family}}.yml"

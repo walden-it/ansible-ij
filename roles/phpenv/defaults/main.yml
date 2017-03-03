@@ -1,0 +1,10 @@
+---
+phpenv_env: system
+phpenv_version: master
+phpenv_global: 5.6.13
+phpenv_versions:
+  - 5.6.13
+
+phpenv_users: []
+
+phpbuild_configure_extras: --with-bz2 --with-pgsql --with-pdo-pgsql

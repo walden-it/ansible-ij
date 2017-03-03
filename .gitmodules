@@ -1,0 +1,12 @@
+[submodule "roles/firewall"]
+	path = roles/firewall
+	url = https://github.com/geerlingguy/ansible-role-firewall.git
+[submodule "roles/git"]
+	path = roles/git
+	url = https://github.com/ANXS/git.git
+[submodule "roles/build-essential"]
+	path = roles/build-essential
+	url = https://github.com/ANXS/build-essential.git
+[submodule "roles/phpenv"]
+	path = roles/phpenv
+	url = https://github.com/josemrb/ansible-role-phpenv.git

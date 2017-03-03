@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Jose Rivero
+  description: Role to install custom versions of PHP using phpenv and php-build.
+  license: MIT
+  min_ansible_version: 1.8.4
+  platforms:
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie
+  categories:
+    - development
+    - system
+
+dependencies:
+  - role: git
+  - role: build-essential

@@ -1,0 +1,28 @@
+- name: MYSQL | Installing MYSQL
+  apt:
+    pkg: "{{item}}"
+    state: latest
+  with_items: 
+    - 'mysql-server'
+    - 'mysql-client'
+
+- name: MySQL | ROOT Password set
+  command: mysql -e "UPDATE mysql.user SET authentication_string=PASSWORD('{{mysql_root_password}}') WHERE User='root';"
+
+- name: MYSQL | remove unsecure users
+  command: mysql -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
+
+- name: MYSQL | remove unsecure users
+  command: mysql -e "DELETE FROM mysql.user WHERE User='';"
+
+- name: MYSQL | Flush Privileges
+  command: mysql -e "FLUSH PRIVILEGES;"
+
+- file: dest=~/.my.cnf state=touch
+
+- name: create user's my.cnf
+  blockinfile:
+    dest: ~/.my.cnf
+    block: |
+      [mysql]
+      password={{mysql_root_password}}

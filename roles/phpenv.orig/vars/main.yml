@@ -1,0 +1,8 @@
+---
+phpenv_repo: "https://github.com/CHH/phpenv.git"
+
+phpenv_plugins:
+  - { name: "php-build",
+      repo: "https://github.com/php-build/php-build.git",
+      version: "master",
+      depth: 1 }

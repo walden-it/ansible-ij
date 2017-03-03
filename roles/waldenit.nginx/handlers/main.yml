@@ -1,0 +1,6 @@
+---
+# handlers file for waldenit.apache2
+- service: 
+    name: nginx
+    state: started
+    enable: yes

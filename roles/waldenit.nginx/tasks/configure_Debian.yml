@@ -6,6 +6,10 @@
     dest: "/etc/nginx/conf.d/{{item.key}}.conf"
   with_dict: vhosts
 
+- template:
+    src: 000-upstream.j2
+    dest: "/etc/nginx/conf.d/000-upstream.conf"
+
 - name: create htdocs
   file: dest=/var/www/{{item.key}}/htdocs recurse=true state=directory
   with_dict: vhosts

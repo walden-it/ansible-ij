@@ -1,8 +1,8 @@
-server {
-    listen       {{item.value.port}} {%if item.value.default == true %} default_server {%endif%};
-    server_name  {{item.key}} {{item.value.server_name_additional}};
+    server {
+    listen {{item.value.port}} {%if item.value.default == true %} default_server {%endif%}; # IP goes here.
+        server_name {{item.key}} {%if item.value.server_name_additional is defined %} {{item.value.server_name_additional}} {%endif%};
 
-    {%if item.value.ssl is defined and item.value.ssl == true %}
+ {%if item.value.ssl is defined and item.value.ssl == true %}
 
     listen              443 ssl;
     server_name         {{item.key}};
@@ -10,7 +10,7 @@ server {
     ssl_certificate_key {{item.value.ssl_key}};
     ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
     ssl_ciphers         HIGH:!aNULL:!MD5;
-    
+
    {%if item.value.ssl_redirect is defined and item.value.ssl_redirect == true %}
     if ($scheme = http) {
         return 301 https://$server_name$request_uri;
@@ -19,41 +19,58 @@ server {
 
    {%endif%}
 
-    #charset koi8-r;
-    access_log  /var/www/{{item.key}}/logs/access.log  main;
+
+	root /var/www/{{item.key}}/htdocs;
+    access_log  /var/www/{{item.key}}/logs/nginx_access.log  main;
+    error_log  /var/www/{{item.key}}/logs/nginx_error.log debug;
+
+        # Set proxy headers for the passthrough
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # Let the Set-Cookie header through.
+        proxy_pass_header Set-Cookie;
+
+        ## domain.org -> www.domin.org (301 - Permanent)
+   #     if ($host ~* ^([a-z0-9]+\.org)$) {
+   #         set $host_with_www www.$1;
+   #         rewrite ^(.*)$
+   #         http://$host_with_www$1 permanent;
+   #     }
+
+    # Max upload size: make sure this matches the php.ini in .htaccess
+        client_max_body_size 8m;
+
+        # Catch the wordpress cookies.
+        # Must be set to blank first for when they don't exist.
+        set $wordpress_auth "";
+        if ($http_cookie ~* "wordpress_logged_in_[^=]*=([^%]+)%7C") {
+            set $wordpress_auth wordpress_logged_in_$1;
+        }
+
+    # Set the proxy cache key
+        set $cache_key $scheme$host$uri$is_args$args;
+
+        # All media (including uploaded) is under wp-content/ so
+        # instead of caching the response from apache, we're just
+        # going to use nginx to serve directly from there.
+        location ~* ^/(wp-content|wp-includes)/(.*)\.(gif|jpg|jpeg|png|ico|bmp|js|css|pdf|doc)$ {
+            root /var/www/{{item.key}}/htdocs;
+        }
+
+    # Don't cache these pages.
+        location ~* ^/(wp-admin|wp-login.php)
+{
+            proxy_pass http://backend;
+        }
 
     location / {
-        root   /var/www/{{item.key}}/htdocs;
-        index  index.php index.html index.htm;
-    }
+            proxy_pass http://backend;
+            # Fallback to stale cache on certain errors.
+            # 503 is deliberately missing, if we're down for maintenance
+# we want the page to display.
+        }
 
-    #error_page  404              /404.html;
-
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
-
-     location ~ \.php$ {
-        proxy_set_header X-Real-IP  $remote_addr;
-        proxy_set_header X-Forwarded-For $remote_addr;
-        proxy_set_header Host $host;
-        proxy_pass http://127.0.0.1:{{apache_port}};
-
-         }
-
-
-    # deny access to .htaccess files, if Apache's document root
-    # concurs with nginx's one
-    #
-    #location ~ /\.ht {
-    #    deny  all;
-    #}
-{% if item.value.additional is defined %}
-   {{item.value.additional}}
-{%endif%}
-}
-
-
+    # Cache purge URL - works in tandem with WP plugin.
+    } # End server

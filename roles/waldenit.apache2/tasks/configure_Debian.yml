@@ -37,6 +37,9 @@
 - name: enable modules
   command: a2enmod proxy_fcgi
 
+- name: enable modules
+  command: a2enmod rewrite
+
 - service:
     name: apache2
     state: restarted

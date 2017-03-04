@@ -1,0 +1,15 @@
+---
+# tasks file for waldenit.wordpress
+- name: wp-cli install
+  command: curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar  -o /usr/local/bin/wp
+ 
+- file:
+    path: /usr/local/bin/wp
+    owner: root
+    group: root
+    mode: 0755
+
+- name: worpress core download
+  command: wp core download --allow-root
+  args:
+    chdir: {{htdocs}}

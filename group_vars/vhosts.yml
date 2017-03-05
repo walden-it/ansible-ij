@@ -3,6 +3,7 @@ vhosts:
   example.com:
       port: 80
       default: false
+      server_name: example.com
       server_name_additional: www.example.com
       php_version: 5.6.29
       enabled: True
@@ -12,6 +13,7 @@ vhosts:
       port: 80
       default: true
       server_name_additional: www.example2.com
+      server_name: example2.com
       ssl: false
       ssl_cert: /etc/nginx/ssl/ssl.cert
       ssl_key: /etc/nginx/ssl/ssl.key
@@ -19,3 +21,7 @@ vhosts:
       php_version: 7.1.2
       enabled: True
       index_file: "index.php" 
+      wp: true
+      wp_admin: admin
+      wp_admin_password: 12345
+      wp_admin_email: walden.devops@gmail.com

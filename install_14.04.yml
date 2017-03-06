@@ -1,0 +1,23 @@
+---
+- hosts: 1404
+  gather_facts: false
+  vars:
+    env:
+      PATH: "{{ ansible_env.PATH }}:/usr/local/phpenv/shims"
+ 
+
+  pre_tasks:
+      - raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      - setup: # aka gather_facts
+
+  tasks:
+    - include_vars: "group_vars/vhosts.yml"
+
+  roles:
+   #- common
+   - waldenit.wordpress
+   #- phpenv
+   #- waldenit.nginx 
+   #- waldenit.mysql
+   #- waldenit.apache2
+   #- firewall

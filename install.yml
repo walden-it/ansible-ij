@@ -1,18 +1,20 @@
 ---
-- hosts: instantjobs
+- hosts: all
   gather_facts: false
 
   pre_tasks:
-    - raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    - raw: test -e /usr/bin/python || (apt-get -y update && apt-get install -y python-minimal) 
+    - raw: apt-get -y install aptitude 
     - setup: # aka gather_facts
 
-  tasks:
-    - include_vars: "group_vars/vhosts.yml"
+  #tasks:
+    #- include_vars: "group_vars/vhosts.yml"
 
   roles:
    - common
    - phpenv
-   - waldenit.nginx 
    - waldenit.mysql
+   - waldenit.nginx 
    - waldenit.apache2
+   - waldenit.wordpress
    - firewall

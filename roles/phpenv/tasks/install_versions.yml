@@ -4,3 +4,11 @@
 
 - include: "user/install_versions.yml"
   when: "phpenv_env == 'user'"
+
+- name: link to /usr/bin
+  file:
+    src: /usr/local/phpenv/shims/php
+    dest: /usr/bin/php
+    state: link
+
+

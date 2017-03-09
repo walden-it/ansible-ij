@@ -1,5 +1,5 @@
 ---
-- hosts: 1404
+- hosts: default
   gather_facts: false
   vars:
     env:
@@ -15,9 +15,9 @@
 
   roles:
    #- common
-   - waldenit.wordpress
    #- phpenv
-   #- waldenit.nginx 
+   - waldenit.nginx 
    #- waldenit.mysql
-   #- waldenit.apache2
+   - waldenit.apache2
+   #- waldenit.wordpress
    #- firewall

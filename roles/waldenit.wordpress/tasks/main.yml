@@ -1,7 +1,7 @@
 ---
 
 # tasks file for waldenit.wordpress
-- include_vars: "group_vars/vhosts.yml"
+#- include_vars: "group_vars/vhosts.yml"
 
 - name: wp-cli install
   command: curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar  -o /usr/local/bin/wp

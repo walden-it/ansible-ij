@@ -1,0 +1,60 @@
+---
+
+# tasks file for waldenit.wordpress
+- include_vars: "group_vars/vhosts.yml"
+
+- name: wp-cli install
+  command: curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar  -o /usr/local/bin/wp
+ 
+- file:
+    path: /usr/local/bin/wp
+    owner: root
+    group: root
+    mode: 0755
+
+
+- stat: path=/var/www/{{item.1.server_name}}/htdocs/wp-content
+  register: wordpress
+  with_indexed_items: vhosts.values()|list
+
+- name: worpress core download
+  command: wp core download --allow-root
+  args:
+    chdir: /var/www/{{item.1.server_name}}/htdocs
+  with_indexed_items: vhosts.values()|list
+  when: wordpress.results.{{item.0}}.stat.exists == False and item.1.wp is defined and item.1.wp == True
+
+- name: Install the Python MySQLB module
+  pip: name=MySQL-python
+
+- name: create database user
+  mysql_user: 
+    name: "{{item.1.server_name.replace('.','')}}"
+    password: "{{lookup('password', '../credentials/' + item.1.server_name + '/wpdb.txt length=15')}}"
+    priv: "{{item.1.server_name.replace('.','')}}.*:ALL"
+  with_indexed_items: vhosts.values()|list
+  when: item.1.wp is defined and item.1.wp == True
+
+- name: wp core config 
+  command: "wp core config --dbname={{item.1.server_name.replace('.','')}} --dbuser={{item.1.server_name.replace('.','')}}  --dbpass={{lookup('password', '../credentials/' + item.1.server_name + '/wpdb.txt length=15')}} --dbhost=127.0.0.1 --allow-root --force"
+  args:
+    chdir: /var/www/{{item.1.server_name}}/htdocs
+  with_indexed_items: vhosts.values()|list
+  when: item.1.wp is defined and item.1.wp == True
+
+  
+- name: wp db create
+  shell: "wp db check --allow-root|| wp db create  --allow-root"
+  args:
+    chdir: /var/www/{{item.1.server_name}}/htdocs
+  with_indexed_items: vhosts.values()|list
+  ignore_errors: yes
+  when: item.1.wp is defined and item.1.wp == True
+  
+- name: wp core install
+  command: "wp core install  --allow-root --admin_user={{item.1.wp_admin}} --admin_password={{item.1.wp_admin_password}} --title={{item.1.server_name}} --url={{item.1.server_name}} --admin_email={{item.1.wp_admin_email}}"
+  args:
+    chdir: /var/www/{{item.1.server_name}}/htdocs
+  with_indexed_items: vhosts.values()|list
+  when: item.1.wp is defined and item.1.wp == True
+  

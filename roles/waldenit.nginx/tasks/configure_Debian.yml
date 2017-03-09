@@ -1,5 +1,5 @@
 ---
-- include_vars: "group_vars/vhosts.yml"
+#- include_vars: "group_vars/vhosts.yml"
 
 - template: 
     src: vhost.j2

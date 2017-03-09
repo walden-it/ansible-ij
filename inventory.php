@@ -33,6 +33,18 @@ return($pdo);
 }
 
 $db = dbconn();
+
+function get_vhosts($host_id)
+{
+global $db;
+$query = $db->query("SELECT * FROM vhosts WHERE host_id=".$host_id);
+while($vhost = $query->fetch())
+$vhosts[$vhost['server_name']] = $vhost;
+
+return($vhosts);
+
+}
+
 function get_groups()
 {
 global $db;
@@ -53,7 +65,7 @@ function get_vars($host_id,$ipaddr)
         $query = $db->query($varsQuery);
 	while($var = $query->fetch())
         $hostvars[$ipaddr][$var['key']] = $var['value'];
-
+         $hostvars[$ipaddr]["vhosts"] = get_vhosts($host_id);
 
 }
 
@@ -78,10 +90,7 @@ global $db, $hostvars;
 $groups = get_groups();
 
 foreach($groups as $group)
-{
-
  $ret[$group['name']] = array("hosts" => get_hosts($group['id']));
-}
 
 $ret["_meta"]["hostvars"] = $hostvars;
 print(json_encode($ret));

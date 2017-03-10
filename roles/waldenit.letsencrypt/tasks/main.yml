@@ -11,3 +11,10 @@
   with_items:
     - letsencrypt
 
+- name: ini file
+    template: 
+      src: webroot.ini.j2
+      dest: /etc/letsencrypt.ini
+    with_indexed_items: vhosts.values()|list
+    when: item.1.ssl_enabled is true
+

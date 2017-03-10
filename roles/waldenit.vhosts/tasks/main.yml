@@ -1,0 +1,43 @@
+#- include_vars: 'group_vars/vhosts.yml'
+
+- template: 
+    src: apache2_vhosts.j2
+    dest: "/etc/apache2/sites-available/{{item.key}}.conf"
+  with_dict: vhosts
+
+- file:
+    src: "/etc/apache2/sites-available/{{item.key}}.conf"
+    dest: "/etc/apache2/sites-enabled/{{item.key}}.conf"
+    state: link
+  with_dict: vhosts
+  when:  item.value.enabled == True
+
+- template: 
+    src: nginx_vhost.j2
+    dest: "/etc/nginx/conf.d/{{item.key}}.conf"
+  with_dict: vhosts
+
+- name: create htdocs
+  file: dest=/var/www/{{item.key}}/htdocs recurse=true state=directory
+  with_dict: vhosts
+
+- name: create logs
+  file: dest=/var/www/{{item.key}}/logs recurse=true state=directory
+  with_dict: vhosts
+
+- name: upload index.php
+  copy: 
+    dest: /var/www/{{item.key}}/htdocs/index.php
+    src: "{{item.value.index_file}}"
+  with_dict: vhosts
+
+- name: restart  nginx
+  service:
+    name: nginx
+    state: restarted
+
+- name: restart apache2
+  service:
+    name: apache2
+    state: restarted
+

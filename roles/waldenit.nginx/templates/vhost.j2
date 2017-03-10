@@ -58,6 +58,9 @@
         location ~* ^/(wp-content|wp-includes)/(.*)\.(gif|jpg|jpeg|png|ico|bmp|js|css|pdf|doc)$ {
             root /var/www/{{item.key}}/htdocs;
         }
+ location ~ /.well-known {
+                allow all;
+        }
 
     # Don't cache these pages.
         location ~* ^/(wp-admin|wp-login.php)

@@ -2,7 +2,7 @@
     listen {{item.value.port}} {%if item.value.default == true %} default_server {%endif%}; # IP goes here.
         server_name {{item.key}} {%if item.value.server_name_additional is defined %} {{item.value.server_name_additional}} {%endif%};
 
- {%if item.value.ssl is defined and item.value.ssl == true %}
+ {%if item.value.ssl_enabled is defined and item.value.ssl_enabled == true %}
 
     listen              443 ssl;
     server_name         {{item.key}};

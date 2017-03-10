@@ -65,6 +65,10 @@
             proxy_pass http://backend;
         }
 
+ location ~ /.well-known {
+                allow all;
+        }
+
     location / {
             proxy_pass http://backend;
             # Fallback to stale cache on certain errors.

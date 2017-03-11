@@ -20,6 +20,4 @@
   when: item.1.ssl_enabled == true
 
 - name: restart nginx
-  systemd: name=nginx-debug state=retarted
-
-   
+  service: name=nginx-debug state=restarted

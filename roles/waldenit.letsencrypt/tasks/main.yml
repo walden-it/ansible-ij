@@ -1,0 +1,23 @@
+- name: download letsencrypt
+  get_url:
+    url: https://dl.eff.org/certbot-auto
+    dest: /usr/local/bin/letsencrypt
+    mode: 0755
+
+- name: create config dir
+  file: dest=/etc/letsencrypt/config state=directory
+
+- name: create ini file
+  template: 
+    src: letsencrypt.ini.j2
+    dest: /etc/letsencrypt/config/{{item.1.server_name}}.ini
+  with_indexed_items: vhosts.values()|list
+  when: item.1.ssl_enabled == true
+
+- name: execute letsencrypt
+  command: letsencrypt certonly --agree-tos --config /etc/letsencrypt/config/{{item.1.server_name}}.ini
+  with_indexed_items: vhosts.values()|list
+  when: item.1.ssl_enabled == true
+
+- name: restart nginx
+  service: name=nginx-debug state=restarted

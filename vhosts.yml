@@ -4,3 +4,4 @@
 
   roles:
    - waldenit.vhosts
+   - waldenit.letsencrypt

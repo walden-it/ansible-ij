@@ -1,20 +1,25 @@
-- name: update apt packages
-  apt: >
-    update_cache=yes
-    cache_valid_time=3600
+- name: download letsencrypt
+  get_url:
+    url: https://dl.eff.org/certbot-auto
+    dest: /usr/local/bin/letsencrypt
+    mode: 0755
 
+- name: create config dir
+  file: dest=/etc/letsencrypt/config state=directory
 
-- name: install letsencrypt
-  apt: 
-    name: "{{item}}"
-    state: present
-  with_items:
-    - letsencrypt
+- name: create ini file
+  template: 
+    src: letsencrypt.ini.j2
+    dest: /etc/letsencrypt/config/{{item.1.server_name}}.ini
+  with_indexed_items: vhosts.values()|list
+  when: item.1.ssl_enabled == true
 
-- name: ini file
-    template: 
-      src: webroot.ini.j2
-      dest: /etc/letsencrypt.ini
-    with_indexed_items: vhosts.values()|list
-    when: item.1.ssl_enabled is true
+- name: execute letsencrypt
+  command: letsencrypt certonly --agree-tos --config /etc/letsencrypt/config/{{item.1.server_name}}.ini
+  with_indexed_items: vhosts.values()|list
+  when: item.1.ssl_enabled == true
 
+- name: restart nginx
+  systemd: name=nginx-debug state=retarted
+
+   

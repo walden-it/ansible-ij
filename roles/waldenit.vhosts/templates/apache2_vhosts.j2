@@ -8,12 +8,20 @@
 	# However, you must set it for any further virtual host explicitly.
 	ServerName {{item.key}}
 
-	{% if item.value.server_name_additional is defined %}
+	{% if item.value.server_name_additional is defined  and item.value.server_name_additional != ""  %}
 	ServerAlias {{item.value.server_name_additional}}
 	{% endif %}
 
 	ServerAdmin webmaster@localhost
 	DocumentRoot /var/www/{{item.key}}/htdocs
+
+<IfModule mod_rpaf.c>
+        RPAF_Enable             On
+        RPAF_Header             X-Real-Ip
+        RPAF_SetHostName        On
+        RPAF_SetHTTPS           On
+        RPAF_SetPort            On
+</IfModule>
 
 
 	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,

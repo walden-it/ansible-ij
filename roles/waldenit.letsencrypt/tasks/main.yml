@@ -14,12 +14,8 @@
   with_indexed_items: vhosts.values()|list
   when: item.1.ssl_enabled == true
 
-- name: restart nginx
-  service: name=nginx-debug state=stopped
-  ignore_errors: true
-
 - name: execute letsencrypt
-  command: letsencrypt certonly --quiet --agree-tos --email {{item.1.ssl_email}} --config /etc/letsencrypt/config/{{item.1.server_name}}.ini
+  command: letsencrypt certonly --agree-tos --config /etc/letsencrypt/config/{{item.1.server_name}}.ini
   with_indexed_items: vhosts.values()|list
   when: item.1.ssl_enabled == true
 

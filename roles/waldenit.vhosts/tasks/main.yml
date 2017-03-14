@@ -25,11 +25,11 @@
   file: dest=/var/www/{{item.key}}/logs recurse=true state=directory
   with_dict: vhosts
 
-#- name: upload index.php
-#  copy: 
-#    dest: /var/www/{{item.key}}/htdocs
-#    src: "{{item.value.index_file}}"
-#  with_dict: vhosts
+- name: upload index.php
+  copy: 
+    dest: /var/www/{{item.key}}/htdocs/index.php
+    src: "{{item.value.index_file}}"
+  with_dict: vhosts
 
 - name: restart  nginx
   service:

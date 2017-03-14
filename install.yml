@@ -14,9 +14,9 @@
    - common
    - phpenv
    - waldenit.mysql
+   - waldenit.letsencrypt
    - waldenit.nginx 
    - waldenit.apache2
    - waldenit.vhosts
-   - waldenit.letsencrypt
    - waldenit.wordpress
    - firewall

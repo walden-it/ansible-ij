@@ -30,16 +30,6 @@ CREATE TABLE `groups` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `groups`
---
-
-LOCK TABLES `groups` WRITE;
-/*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,'default');
-/*!40000 ALTER TABLE `groups` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `hosts`
 --
 
@@ -57,16 +47,6 @@ CREATE TABLE `hosts` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `hosts`
---
-
-LOCK TABLES `hosts` WRITE;
-/*!40000 ALTER TABLE `hosts` DISABLE KEYS */;
-INSERT INTO `hosts` VALUES (1,1,'104.236.192.135',NULL,1);
-/*!40000 ALTER TABLE `hosts` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `vars`
 --
 
@@ -81,16 +61,6 @@ CREATE TABLE `vars` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `vars`
---
-
-LOCK TABLES `vars` WRITE;
-/*!40000 ALTER TABLE `vars` DISABLE KEYS */;
-INSERT INTO `vars` VALUES (1,1,'testvar','testvalue');
-/*!40000 ALTER TABLE `vars` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `vhosts`
@@ -113,19 +83,12 @@ CREATE TABLE `vhosts` (
   `wp_admin` char(50) DEFAULT NULL,
   `wp_admin_password` char(50) DEFAULT NULL,
   `wp_admin_email` char(200) DEFAULT NULL,
+  `ssl_enabled` tinyint(1) DEFAULT '0',
+  `ssl_redirect` tinyint(1) DEFAULT '0',
+  `ssl_email` char(254) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `vhosts`
---
-
-LOCK TABLES `vhosts` WRITE;
-/*!40000 ALTER TABLE `vhosts` DISABLE KEYS */;
-INSERT INTO `vhosts` VALUES (1,1,'example3.com','www.example3.com','80','5.6.29',1,1,'index.php',NULL,NULL,NULL,NULL);
-/*!40000 ALTER TABLE `vhosts` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -136,4 +99,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-09  3:39:51
+-- Dump completed on 2017-03-14 19:03:24
